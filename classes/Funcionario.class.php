@@ -88,7 +88,7 @@ class Funcionario extends Conexao{
                         $mail->Username = 'wesllen1993@hotmail.com';
 
                         // Senha da conta
-                        $mail->Password = 'We241993';
+                        $mail->Password = '******';
 
                         // Tipo de encriptação que será usado na conexão SMTP
                         $mail->SMTPSecure = 'tls';
