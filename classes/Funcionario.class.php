@@ -159,7 +159,8 @@ class Funcionario extends Conexao{
 //			$cst->bindParam(":idFunc", $this->idFuncionario, PDO::PARAM_INT);
 						
 			if($cst->execute()){
-				echo 'ok';
+                            $rst = $cst->fetchAll();
+				$_SESSION['fotoperfil'] = $rst['nome'];
 			}else{
 				echo 'Error ao alterar';
 			}

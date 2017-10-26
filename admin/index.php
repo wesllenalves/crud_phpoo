@@ -5,10 +5,15 @@ require_once '../classes/Funcionario.class.php';
 $objFunc = new Funcionario();
 //VALIDANDO USUARIO
 session_start();
+
+
+
 if($_SESSION["logado"] == "sim"){
-    
+        
 	$objFunc->funcionarioLogado($_SESSION['func']);
         $id = $_SESSION['func'];
+        $foto = $_SESSION['fotoperfil'];
+        
 }else{
 	header("location: http://localhost/crud_phpoo/"); 
  }
@@ -158,11 +163,21 @@ if(isset($_GET['sair']) == "sim"){
     </ul>
   </div>
 </nav>
-    <div class="container">
-        <a id="FTperfil" data-toggle="modal" data-target="#myModal"><img width="120px" height="120px" src="../upload/perfil/default.png" /></a><br>        
-    <?php echo$id; ?>
-    </div>
-    
+    <?php echo $foto; ?>
+    <?php
+        
+
+    if (!empty($foto) == ''){
+       
+    echo '<div class="container">
+        <a id="FTperfil" data-toggle="modal" data-target="#myModal"><img width="120px" height="120px" src="../upload/perfil/default.png" /></a><br>
+    </div>';
+    }else{
+      echo '<div class="container">
+        <a id="FTperfil" data-toggle="modal" data-target="#myModal"><img width="120px" height="120px" src="../upload/perfil/'.$foto.'" /></a><br>
+    </div>';  
+    }
+    ?>
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
