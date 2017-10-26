@@ -8,6 +8,7 @@ session_start();
 if($_SESSION["logado"] == "sim"){
     
 	$objFunc->funcionarioLogado($_SESSION['func']);
+        $id = $_SESSION['func'];
 }else{
 	header("location: http://localhost/crud_phpoo/"); 
  }
@@ -19,10 +20,10 @@ if($_SESSION["logado"] == "sim"){
 }
 if(isset($_POST['enviaimg'])){
     
-    $arquivo 	= $_FILES['arquivo']['name'];
+    $arquivo = $_FILES['imagem']['name'];
 			
 			//Pasta onde o arquivo vai ser salvo
-			$_UP['pasta'] = 'foto/';
+			$_UP['pasta'] = '../upload/perfil/';
 			
 			//Tamanho máximo do arquivo em Bytes
 			$_UP['tamanho'] = 1024*1024*100; //5mb
@@ -31,7 +32,7 @@ if(isset($_POST['enviaimg'])){
 			$_UP['extensoes'] = array('png', 'jpg', 'jpeg', 'gif');
 			
 			//Renomeiar
-			$_UP['renomeia'] = true;
+			$_UP['renomeia'] = TRUE;
 			
 			//Array com os tipos de erros de upload do PHP
 			$_UP['erros'][0] = 'Não houve erro';
@@ -41,16 +42,17 @@ if(isset($_POST['enviaimg'])){
 			$_UP['erros'][4] = 'Não foi feito o upload do arquivo';
 			
 			//Verifica se houve algum erro com o upload. Sem sim, exibe a mensagem do erro
-			if($_FILES['arquivo']['error'] != 0){
-				die("Não foi possivel fazer o upload, erro: <br />". $_UP['erros'][$_FILES['arquivo']['error']]);
+			if($_FILES['imagem']['error'] != 0){
+				die("Não foi possivel fazer o upload, erro: <br />". $_UP['erros'][$_FILES['imagem']['error']]);
 				exit; //Para a execução do script
 			}
 			
 			//Faz a verificação da extensao do arquivo
-			$extensao = strtolower(end(explode('.', $_FILES['arquivo']['name'])));
+			$extensao = strtolower(end(explode('.', $_FILES['imagem']['name'])));
 			if(array_search($extensao, $_UP['extensoes'])=== false){		
-				echo "
-					<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/Aula/upload_imagem.php'>
+                            
+                            echo "
+					<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/crud_phpoo/admin/index.php?extaocao=erro'>
 					<script type=\"text/javascript\">
 						alert(\"A imagem não foi cadastrada extesão inválida.\");
 					</script>
@@ -58,9 +60,9 @@ if(isset($_POST['enviaimg'])){
 			}
 			
 			//Faz a verificação do tamanho do arquivo
-			else if ($_UP['tamanho'] < $_FILES['arquivo']['size']){
+			else if ($_UP['tamanho'] < $_FILES['imagem']['size']){
 				echo "
-					<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/Aula/upload_imagem.php'>
+					<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/crud_phpoo/admin/index.php?tamanho=erro'>
 					<script type=\"text/javascript\">
 						alert(\"Arquivo muito grande.\");
 					</script>
@@ -70,36 +72,39 @@ if(isset($_POST['enviaimg'])){
 			//O arquivo passou em todas as verificações, hora de tentar move-lo para a pasta foto
 			else{
 				//Primeiro verifica se deve trocar o nome do arquivo
-				if($UP['renomeia'] == true){
+				if($_UP['renomeia'] == TRUE){
 					//Cria um nome baseado no UNIX TIMESTAMP atual e com extensão .jpg
 					$nome_final = time().'.jpg';
 				}else{
 					//mantem o nome original do arquivo
-					$nome_final = $_FILES['arquivo']['name'];
+					$nome_final = $_FILES['imagem']['name'];
 				}
 				//Verificar se é possivel mover o arquivo para a pasta escolhida
-				if(move_uploaded_file($_FILES['arquivo']['tmp_name'], $_UP['pasta']. $nome_final)){
+				if(move_uploaded_file($_FILES['imagem']['tmp_name'], $_UP['pasta']. $nome_final)){
 					//Upload efetuado com sucesso, exibe a mensagem
-					$query = mysqli_query($conn, "INSERT INTO usuarios (
-					nome_imagem) VALUES('$nome_final')");
-					echo "
-						<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/Aula/upload_imagem.php'>
-						<script type=\"text/javascript\">
-							alert(\"Imagem cadastrada com Sucesso.\");
-						</script>
-					";	
-				}else{
-					//Upload não efetuado com sucesso, exibe a mensagem
-					echo "
-						<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/Aula/upload_imagem.php'>
-						<script type=\"text/javascript\">
-							alert(\"Imagem não foi cadastrada com Sucesso.\");
-						</script>
-					";
+                                        //
+                                    
+                                        $objFunc->updateFoto($nome_final);
+//					$query = mysqli_query($conn, "INSERT INTO usuarios (
+//					nome_imagem) VALUES('$nome_final')");
+//					echo "
+//						<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/Aula/upload_imagem.php'>
+//						<script type=\"text/javascript\">
+//							alert(\"Imagem cadastrada com Sucesso.\");
+//						</script>
+//					";	
+//				}else{
+//					//Upload não efetuado com sucesso, exibe a mensagem
+//					echo "
+//						<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/crud_phpoo/admin/index.php?error=true'>
+//						<script type=\"text/javascript\">
+//							alert(\"Imagem não foi cadastrada com Sucesso.\");
+//						</script>
+//					";
 				}
 			}
     
-	$objFunc->updateFoto($_POST);
+	
 }
 
 if(isset($_GET['sair']) == "sim"){
@@ -155,6 +160,7 @@ if(isset($_GET['sair']) == "sim"){
 </nav>
     <div class="container">
         <a id="FTperfil" data-toggle="modal" data-target="#myModal"><img width="120px" height="120px" src="../upload/perfil/default.png" /></a><br>        
+    <?php echo$id; ?>
     </div>
     
 <!-- Modal -->
@@ -167,11 +173,10 @@ if(isset($_GET['sair']) == "sim"){
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <div>Alterar foto      </div>
       <div class="modal-body">
-          <form method="POST">
+          <form method="POST" enctype="multipart/form-data">
               <input type="file" name="imagem" >
               
-              <button  type="submit" name="enviaimg" class="btn btn-default btn-sm">
-          <span class="glyphicon glyphicon-camera"></span> Camera
+              <button  type="submit" name="enviaimg" class="btn btn-default btn-sm">Enviar    
         </button>
           </form>
       </div>      
