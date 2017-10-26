@@ -54,17 +54,21 @@ if(isset($_POST['btLogar'])){
 	<link rel="stylesheet" href="assets/home/css/styles.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <style type="text/css">
+            #conteudo{
+                border-top: 1px solid black;
+            }
+            
             #form_login{
-               margin-left: 40%;
+               margin-left: 36%;
                width: 350px;
                height: 300px;
             }
             #form_login form{
                 margin-top: 50px;
             }
-            #ativado{
-                margin-left: 36.5%;
-                margin-top: 50px;
+            #mensagens{
+                margin-left: 35.5%;
+                margin-top: 50px;                
             }
         </style>
 </head>
@@ -110,14 +114,19 @@ if(isset($_POST['btLogar'])){
 				</div>
 			</div>
 		</div>
-	</div> 
-        <div id="ativado" class="col-md-4">
+	</div>
+        <div id="conteudo">
+        <div class="container" >
+        <div id="mensagens" class="col-md-4">
         
-            <?php if(!empty($_GET['ativado']) == 'true' ){               
-                
-                 echo '<div class="alert alert-success"><strong>Parabéns Sua conta foi Ativada</strong></div>';
-
-                 } ?>
+            <?php if(!empty($_GET['ativado']) == 'true' ){
+                    echo '<div class="alert alert-success"><strong>Parabéns Sua conta foi Ativada</strong></div>';
+                }?>
+            <?php
+            if(!empty($_GET['inativo']) == 'true') {
+                    echo '<div class="alert alert-danger"><strong>Sua conta Ainda não foi Ativada.'
+                    . ' Entre em seu email e Ative para poder continuar com o login</strong></div>';
+                }?>
             
         
         </div>
@@ -154,7 +163,8 @@ if(isset($_POST['btLogar'])){
 			</div>
 		</div>
 	</section>
-        
+        </div>
+        </div>
            
         
    <!-- SECTION: Footer -->

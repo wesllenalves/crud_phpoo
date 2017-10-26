@@ -6,9 +6,16 @@ $objFunc = new Funcionario();
 //VALIDANDO USUARIO
 session_start();
 if($_SESSION["logado"] == "sim"){
+    
 	$objFunc->funcionarioLogado($_SESSION['func']);
 }else{
 	header("location: http://localhost/crud_phpoo/"); 
+ }
+ 
+ if($_SESSION['ativo'] == 1){
+     $objFunc->funcionarioLogado($_SESSION['func']);
+}else{
+    header("location: http://localhost/crud_phpoo/login.php?inativo=true");
 }
 
 if(isset($_GET['sair']) == "sim"){

@@ -140,8 +140,7 @@ class Funcionario extends Conexao{
         public function desbloqueaConta($key){
             
 		try{
-                    $status = 1;
-			$cst = $this->con->conectar()->prepare("UPDATE `funcionario` SET `status` = '1' WHERE md5(idFuncionario) = '$key';");
+                    $cst = $this->con->conectar()->prepare("UPDATE `funcionario` SET `status` = '1' WHERE md5(idFuncionario) = '$key';");
 						
 			if($cst->execute()){
 				header('location: http://localhost/crud_phpoo/login.php?ativado=true');
@@ -191,17 +190,19 @@ class Funcionario extends Conexao{
 		$this->email = $dados['email'];
 		$this->senha = md5($dados['senha']);
 		try{
-			$cst = $this->con->conectar()->prepare("SELECT `idFuncionario`, `email`, `senha` FROM `funcionario` WHERE `email` = :email AND `senha` = :senha;");
+                        $cst = $this->con->conectar()->prepare("SELECT `idFuncionario`, `email`, `senha`, `status` FROM `funcionario` WHERE `email` = :email AND `senha` = :senha; AND `status` = '1'");
 			$cst->bindParam(':email', $this->email, PDO::PARAM_STR);
 			$cst->bindParam(':senha', $this->senha, PDO::PARAM_STR);
-			$cst->execute();
+			$cst->execute();                        
 			if($cst->rowCount() == 0){
 				header('location: http://localhost/crud_phpoo/login.php?login=error');
 			}else{
 				session_start();
 				$rst = $cst->fetch();
 				$_SESSION['logado'] = "sim";
+                                $_SESSION['ativo'] = $rst['status'];
 				$_SESSION['func'] = $rst['idFuncionario'];
+                                
 				header("location: http://localhost/crud_phpoo/admin");
 			}
 		}catch(PDOException $e){
