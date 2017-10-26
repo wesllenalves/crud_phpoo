@@ -15,6 +15,7 @@ class Funcionario extends Conexao{
         private $telefone;
         private $senha;
 	private $dataCadastro;
+        private $caminho;
 	//CONSTRUTOR
 	public function __construct(){
 		$this->con = new Conexao();
@@ -151,6 +152,23 @@ class Funcionario extends Conexao{
 			return 'Error: '.$e->getMessage();
 		}
 	}
+        
+        public function updateFoto(){
+           try{
+			$this->idFuncionario = $this->objfc->base64($dados['func'], 2);
+			$$this->caminho = $this->objfc($dados['imagem']);
+			$cst = $this->con->conectar()->prepare("UPDATE `imagemperfil` SET `nome` = :caminho;");
+			$cst->bindParam(":idFunc", $this->idFuncionario, PDO::PARAM_INT);
+			$cst->bindParam(":nome", $this->nome, PDO::PARAM_STR);			
+			if($cst->execute()){
+				return 'ok';
+			}else{
+				return 'Error ao alterar';
+			}
+		}catch(PDOException $e){
+			return 'Error: '.$e->getMessage();
+		}
+        }
 	
 	public function queryUpdade($dados){
 		try{
