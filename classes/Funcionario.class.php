@@ -153,20 +153,52 @@ class Funcionario extends Conexao{
 		}
 	}
         
-        public function updateFoto($nome_final){
-           try{           
-			$cst = $this->con->conectar()->prepare("UPDATE `imagemperfil` SET `nome` = '$nome_final';");
-//			$cst->bindParam(":idFunc", $this->idFuncionario, PDO::PARAM_INT);
-						
+        public function trasImagem(){
+                     try{                             
+                         
+			$cst = $this->con->conectar()->prepare("SELECT `idImagem`, `nome` FROM `imagemperfil`");
 			if($cst->execute()){
-                            $rst = $cst->fetchAll();
-				$_SESSION['fotoperfil'] = $rst['nome'];
-			}else{
-				echo 'Error ao alterar';
-			}
+			$rst = $cst->fetch();                    
+                        $_SESSION['foto'] = $rst['nome'];
+                        $_SESSION['idfoto'] = $rst['idImagem'];
+                        }else{
+                            
+                        }
+                     }catch(PDOException $e){
+			return 'Error: '.$e->getMessage();
+		}
+        }
+        
+        public function iserirFoto($nome_final){
+           try{           
+			$cst = $this->con->conectar()->prepare("insert into `imagemperfil` (nome) values ('$nome_final');");
+//			$cst->bindParam(":idFunc", $this->idFuncionario, PDO::PARAM_INT);						
+                        if($cst->execute()){
+                            echo 'certo';
+                        }else{
+                            echo 'erro';
+                        }                        
+                         
 		}catch(PDOException $e){
 			return 'Error: '.$e->getMessage();
 		}
+                
+        }
+        
+        public function updateFoto($nome_final, $idfoto){
+           try{           
+			$cst = $this->con->conectar()->prepare("UPDATE `imagemperfil` SET nome = '$nome_final'WHERE `idImagem` = '$idfoto'");
+//			$cst->bindParam(":idFunc", $this->idFuncionario, PDO::PARAM_INT);						
+                        if($cst->execute()){
+                            echo 'certo';
+                        }else{
+                            echo 'erro';
+                        }                        
+                         
+		}catch(PDOException $e){
+			return 'Error: '.$e->getMessage();
+		}
+                
         }
 	
 	public function queryUpdade($dados){
