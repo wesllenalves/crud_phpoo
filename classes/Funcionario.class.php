@@ -153,44 +153,32 @@ class Funcionario extends Conexao{
 		}
 	}
         
-        public function trasImagem(){
+        public function trasImagem($id){
                      try{                             
                          
-			$cst = $this->con->conectar()->prepare("SELECT `idImagem`, `nome` FROM `imagemperfil`");
+			$cst = $this->con->conectar()->prepare("SELECT `imagem` FROM `funcionario` where idFuncionario= '$id';");
 			if($cst->execute()){
-			$rst = $cst->fetch();                    
-                        $_SESSION['foto'] = $rst['nome'];
-                        $_SESSION['idfoto'] = $rst['idImagem'];
+			$rst = $cst->fetch();                
+                        
+                        $_SESSION['imagem'] = $rst['imagem'];
                         }else{
                             
                         }
                      }catch(PDOException $e){
 			return 'Error: '.$e->getMessage();
 		}
-        }
+        }        
         
-        public function iserirFoto($nome_final){
-           try{           
-			$cst = $this->con->conectar()->prepare("insert into `imagemperfil` (nome) values ('$nome_final');");
-//			$cst->bindParam(":idFunc", $this->idFuncionario, PDO::PARAM_INT);						
-                        if($cst->execute()){
-                            echo 'certo';
-                        }else{
-                            echo 'erro';
-                        }                        
-                         
-		}catch(PDOException $e){
-			return 'Error: '.$e->getMessage();
-		}
-                
-        }
         
-        public function updateFoto($nome_final, $idfoto){
-           try{           
-			$cst = $this->con->conectar()->prepare("UPDATE `imagemperfil` SET nome = '$nome_final'WHERE `idImagem` = '$idfoto'");
-//			$cst->bindParam(":idFunc", $this->idFuncionario, PDO::PARAM_INT);						
+        public function updateFoto($nome_final, $id){
+           try{         
+                        $this->dataCadastro = $this->objfc->dataAtual(2);
+			$cst = $this->con->conectar()->prepare("UPDATE `funcionario` SET imagem = '$nome_final', data_atualizacao = :data WHERE `idFuncionario` = '$id'");
+//			$cst->bindParam(":idFunc", $this->idFuncionario, PDO::PARAM_INT);
+                        $cst->bindParam(":data", $this->dataCadastro, PDO::PARAM_STR);
                         if($cst->execute()){
-                            echo 'certo';
+                            $rst = $cst->fetch();
+                           $_SESSION['imagem'] = $rst['imagem'];
                         }else{
                             echo 'erro';
                         }                        
