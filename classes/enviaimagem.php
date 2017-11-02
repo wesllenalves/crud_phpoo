@@ -38,10 +38,11 @@ session_start();
 				die("Não foi possivel fazer o upload, erro: <br />". $_UP['erros'][$_FILES['imagem']['error']]);
 				exit; //Para a execução do script
 			}
-			
+			 $estende = explode('.', $_FILES['imagem']['name']);
+                         $extensao = strtolower(end($estende));
 			//Faz a verificação da extensao do arquivo
-			$extensao = strtolower(end(explode('.', $_FILES['imagem']['name'])));
-			if(array_search($extensao, $_UP['extensoes'])=== false){		
+//			$extensao = strtolower(end(explode('.', $_FILES['imagem']['name'])));
+			if(array_search($extensao, $_UP['extensoes']) === false){		
                             
                             echo "
 					<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/crud_phpoo/admin/index.php?extaocao=erro'>
